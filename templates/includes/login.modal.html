@@ -1,34 +1,28 @@
-<div  class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div  class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">>
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title">Register yourself</h5>
+          <h5 class="modal-title">Login yourself</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-            <form action="{% url 'user_register' %}" method="POST">
+            <form action="{% url 'user_login' %}" method="POST">
               {% csrf_token %}
                 <div class="form-group">
                     <label for="user_name" class="form-label">Username</label>
                     <input type="text" name="user_name" class="form-control form-control-sm">
                 </div>
-                <div class="form-group">
-                    <label for="user_email" class="form-label">Email</label>
-                    <input type="text" name="user_email" class="form-control form-control-sm" type="email">
-                </div>
+             
                 <div class="form-group">
                     <label for="user_password" class="form-label">Password</label>
                     <input  name="user_password" class="form-control form-control-sm" type="password">
                 </div>
-                <div class="form-group">
-                    <label for="use_confirm_password" class="form-label">Confirm Password</label>
-                    <input  name="user_confirm_password" class="form-control form-control-sm" type="password">
-                </div>
+               
          
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-primary">Save changes</button>
+          <button type="submit" class="btn btn-outline-primary">Login</button>
         </div>
     </form>
       </div>

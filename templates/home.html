@@ -51,9 +51,12 @@ Theme Snippet form:https://www.bootdey.com/snippets/view/bs5-forum-list
               class="form-control form-control-lg bg-white bg-op-9 text-sm w-lg-50"
               data-toggle="select"
               tabindex="-98"
+              onchange="location = this.value;"
             >
+            <option>All</option>
+ 
             {% for category in categories %}
-            <option>{{category.category_name}}</option>
+            <option  value="{% url 'show_category_posts' category.category_id %}">{{category.category_name}}</option>
  
             {% endfor %}
           
@@ -142,13 +145,15 @@ Theme Snippet form:https://www.bootdey.com/snippets/view/bs5-forum-list
           data-bs-toggle="modal"
           data-bs-target="#registerModal"
           class="btn btn-lg btn-block btn-primary rounded-0 py-4 mb-3 bg-op-6 roboto-bold"
-          href="#"
+          
           >Register</button>
-        <a
+        <button
+        type="button"
+        data-bs-toggle="modal"
+        data-bs-target="#loginModal"
         class="btn btn-lg btn-block btn-secondary rounded-0 py-4 mb-3 bg-op-6 roboto-bold"
-        href="#"
-        >Login</a
-      >
+        
+        >Login</button>
           {% endif %}
        
     
@@ -158,7 +163,7 @@ Theme Snippet form:https://www.bootdey.com/snippets/view/bs5-forum-list
             <hr class="m-0" />
             <div class="pos-relative px-3 py-3">
               <h6 class="text-primary text-sm">
-                <a href="#" class="text-primary"
+                <a href="{% url 'show_post' post.post_slug %}" class="text-primary"
                   >{{post.post_title}}
                 </a>
               </h6>
@@ -208,5 +213,7 @@ Theme Snippet form:https://www.bootdey.com/snippets/view/bs5-forum-list
   </div>
 </div>
 {% include "includes/register.modal.html" %}
+{% include "includes/login.modal.html" %}
+
 
 {% endblock body %}

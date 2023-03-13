@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from taggit.managers import TaggableManager
+from django.contrib.contenttypes.fields import GenericRelation
+from hitcount.models import HitCount,HitCountMixin
 # Create your models here.
 class Category(models.Model):
     category_id = models.AutoField(primary_key=True)
@@ -16,7 +18,7 @@ class Category(models.Model):
         return self.category_name
 
 
-class Post(models.Model):
+class Post(models.Model,HitCountMixin):
     post_id = models.AutoField(primary_key=True)
     post_title = models.CharField(max_length=50)
     post_content = models.TextField()
@@ -26,6 +28,7 @@ class Post(models.Model):
     post_created_at = models.DateTimeField(auto_now_add=True)
     post_created_by = models.ForeignKey(User,on_delete=models.CASCADE)
     post_category = models.ForeignKey(Category,on_delete=models.CASCADE)
+    post_view_count = models.IntegerField(default=0)
     def __str__(self):
         return self.post_content
 
