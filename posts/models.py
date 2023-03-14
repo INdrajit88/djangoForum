@@ -1,8 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from taggit.managers import TaggableManager
-from django.contrib.contenttypes.fields import GenericRelation
-from hitcount.models import HitCount,HitCountMixin
+from django.utils.text import slugify
+
 # Create your models here.
 class Category(models.Model):
     category_id = models.AutoField(primary_key=True)
@@ -18,7 +18,7 @@ class Category(models.Model):
         return self.category_name
 
 
-class Post(models.Model,HitCountMixin):
+class Post(models.Model):
     post_id = models.AutoField(primary_key=True)
     post_title = models.CharField(max_length=50)
     post_content = models.TextField()
@@ -31,6 +31,11 @@ class Post(models.Model,HitCountMixin):
     post_view_count = models.IntegerField(default=0)
     def __str__(self):
         return self.post_content
+    # When saving the post automatically add the create a slug based on post title so that user dont have to enter slug manualy
+    def save(self, *args, **kwargs):
+        value = self.post_title
+        self.post_slug = slugify(value, allow_unicode=True)
+        super().save(*args, **kwargs)
 
 
 class Comment(models.Model):
