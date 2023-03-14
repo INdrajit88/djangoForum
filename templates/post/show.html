@@ -1,4 +1,16 @@
-{% extends 'layout.html' %} {% block body %}
+{% extends 'layout.html' %}
+
+{% block styles %}
+  <style>
+    .card{
+      outline: none;
+      border: none;
+    }
+  </style>
+{% endblock styles %}  
+
+{% block body %}
+
 <div class="container">
   {% if post %}
   <div class="card my-2">
@@ -76,12 +88,13 @@
     {% endif %}
   </div>
   {% include 'includes/comment.modal.html' %} {% endif %} {% for comment in post_comments%}
-  <div class="media my-2">
-    <div class="media-left">
-      <img src="img_avatar1.png" class="media-object" style="width: 60px" />
+  <div class="card my-2">
+    <div class="card-header">
+      <h6 class="card-heading text-muted">{{comment.comment_user}} posted {{comment.comment_created_at | timesince}} ago</h6>
     </div>
-    <div class="media-body">
-      <h4 class="media-heading">{{comment.comment_user}}</h4>
+   
+    <div class="card-body">
+   
       <p>{{comment.comment_content}}</p>
     </div>
   </div>
