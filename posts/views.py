@@ -1,14 +1,15 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.template.defaultfilters import slugify
-from .forms import PostForm, CommentForm
+
+from .forms import PostForm
 from .models import Comment, Post
-# Create your views here.
+from django.contrib.auth.decorators import login_required
+
 
 
 def viewed_by_session_count(request, obj):
     session_key = 'viewed_{}'.format(obj.post_id)
-    # retrieve session key
+ 
     if not request.session.get(session_key, False):
         obj.post_view_count += 1
         obj.save(update_fields=['post_view_count'])
@@ -16,24 +17,32 @@ def viewed_by_session_count(request, obj):
 
 
 def show_post(request, post_slug):
-    post = Post.objects.get(post_slug=post_slug)
-    post_comments = Comment.objects.filter(
-        comment_post=post.post_id).order_by('comment_created_at')
-    post_liked = False
-    if request.user.is_authenticated:
+    post = Post.objects.filter(post_slug=post_slug).first()
+    if post:
+   
+        post_comments = Comment.objects.filter(
+            comment_post=post.post_id).order_by('comment_created_at')
+        post_liked = False
+        post_delete=False
+        if request.user.is_authenticated:
+            if post.post_created_by == request.user:
+                post_delete=True
 
-        if post.post_likes.filter(id=request.user.id).exists():
-            post_liked = True
+            if post.post_likes.filter(id=request.user.id).exists():
+                post_liked = True
 
-    context = {
-        "post": post,
-        "post_liked": post_liked,
-        "post_comments": post_comments
-    }
-    viewed_by_session_count(request, post)
-    return render(request, "post/show.html", context)
+        context = {
+            "post": post,
+            "post_liked": post_liked,
+            "post_comments": post_comments,
+            "post_delete": post_delete
+        }
+        viewed_by_session_count(request, post)
+        return render(request, "post/show.html", context)
+    else:
+        return redirect("home")
 
-
+@login_required(login_url="/")
 def create_post(request):
     form = PostForm(request.POST or None)
     if form.is_valid():
@@ -68,7 +77,7 @@ def create_comment(request):
 
 def show_category_posts(request,category_id):
     # Shows the Posts in a category based on category Id
-    posts = Post.objects.filter(post_category=category_id).order_by("post_created_at")
+    posts = Post.objects.filter(post_category=category_id).order_by("-post_created_at")
     context = {
         "posts":posts
     }
@@ -85,3 +94,17 @@ def like_post(request, post_slug):
             else:
                 post.post_likes.add(user)
                 return redirect("show_post", post_slug)
+def delete_post(request):
+    if request.method == "POST":
+        post_slug = request.POST['post_slug']
+
+        if request.user.is_authenticated:
+            post = Post.objects.filter(post_slug=post_slug).first()
+            if post.post_created_by == request.user:
+                post.delete()
+                messages.success(request,"Successfully deleted the post")
+                return redirect("home")
+            else:
+                messages.error(request,"Something went wrong when deleting the post")
+    return redirect("home")
+        

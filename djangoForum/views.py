@@ -1,16 +1,26 @@
 
 from django.shortcuts import redirect,render
 from  posts.models import Category,Post
+from django.contrib.auth.models import User
+from django.db.models import Count
+
+
+
 def home(request):
-    posts = Post.objects.all().order_by('post_created_at')
-    categories = Category.objects.all().order_by('category_created_at')
-    favourite_posts = Post.objects.order_by('post_likes')[:5]# Only getting the top 5 liked posts
-    post_count = Post.objects.all().count()
+    posts = Post.objects.all().order_by('-post_created_at') #Getting the posts based on when they were created
+    
+    categories = Category.objects.all().order_by('category_created_at') #Fetching the categories based on when they were created
+    favourite_posts = Post.objects.order_by('-post_view_count')[:5]# Only getting the top viewed posts
+    post_count = Post.objects.all().count() #Counting the number of posts
+    user_count  = User.objects.all().count() # Counting the total number of users
+    category_count = Category.objects.all().count() # Counting the total number of categories
     context = {
         "posts":posts,
         "categories": categories,
         "post_count" : post_count,
-        "favourite_posts":favourite_posts
+        "favourite_posts":favourite_posts,
+        "user_count": user_count,
+        "category_count": category_count,
     }
     return render(request,'home.html',context)
 

@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from taggit.managers import TaggableManager
 from django.utils.text import slugify
+from django.utils.crypto import get_random_string
+
 
 # Create your models here.
 class Category(models.Model):
@@ -33,8 +35,8 @@ class Post(models.Model):
         return self.post_content
     # When saving the post automatically add the create a slug based on post title so that user dont have to enter slug manualy
     def save(self, *args, **kwargs):
-        value = self.post_title
-        self.post_slug = slugify(value, allow_unicode=True)
+        value = self.post_title 
+        self.post_slug = slugify(value, allow_unicode=True) 
         super().save(*args, **kwargs)
 
 
